@@ -1,0 +1,33 @@
+# necessary for cargo-about
+cargo-features = ["resolver"]
+[package]
+name = "nvg_gl_backend"
+version = "0.5.4"
+authors = ["tasogare3710 <tasogare.android@gmail.com>"]
+license = "MIT"
+edition = "2018"
+resolver = "2"
+
+[dependencies.nvg]
+git = "https://github.com/tasogare3710/nvg.git"
+
+[dependencies.slab]
+version = "0.4.2"
+
+[dependencies.gl]
+version = "0.14.0"
+
+[dependencies.anyhow]
+version= "1.0.26"
+
+[dev-dependencies.glutin]
+version = "0.25.1"
+
+[dev-dependencies.chrono]
+version = "0.4.10"
+
+[dev-dependencies.rand]
+version = "0.7.2"
+
+[dev-dependencies.lazy_static]
+version = "1.4.0"

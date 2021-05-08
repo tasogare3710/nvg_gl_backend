@@ -2,7 +2,7 @@
 cargo-features = ["resolver"]
 [package]
 name = "nvg_gl_backend"
-version = "0.5.4"
+version = "0.5.11"
 authors = ["tasogare3710 <tasogare.android@gmail.com>"]
 license = "MIT"
 edition = "2018"

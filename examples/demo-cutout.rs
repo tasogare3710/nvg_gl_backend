@@ -47,9 +47,9 @@ enum ShapeKind {
 
 impl ShapeKind {
     fn rand<R: Rng>(rng: &mut R) -> Self {
-        match rng.gen_range(0, 2) {
-            0 => ShapeKind::Polygon(rng.gen_range(3, 6)),
-            1 => ShapeKind::Squiggle(rng.gen_range(3, 6)),
+        match rng.gen_range(0..2) {
+            0 => ShapeKind::Polygon(rng.gen_range(3..6)),
+            1 => ShapeKind::Squiggle(rng.gen_range(3..6)),
             _ => unreachable!(),
         }
     }
@@ -68,8 +68,8 @@ impl Shape {
         let direction = [-1.0f32, 1.0f32].choose(rng).unwrap();
 
         Shape {
-            rotation: rng.gen_range(0.0, 2.0 * PI),
-            speed: rng.gen_range(1.0, 4.0) * direction,
+            rotation: rng.gen_range(0.0..2.0 * PI),
+            speed: rng.gen_range(1.0..4.0) * direction,
             color: *color,
             kind: ShapeKind::rand(rng),
         }

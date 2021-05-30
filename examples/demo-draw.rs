@@ -1,7 +1,7 @@
 use std::{f32::consts::PI, time::Instant};
 
 use anyhow::Error;
-use nvg::*;
+use nvg::prelude::*;
 
 mod demo;
 

@@ -425,7 +425,7 @@ impl Renderer {
     }
 }
 
-impl renderer::Renderer for Renderer {
+impl nvg::renderer::Renderer for Renderer {
     fn edge_antialias(&self) -> bool {
         true
     }

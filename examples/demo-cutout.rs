@@ -4,7 +4,7 @@ extern crate lazy_static;
 use std::{collections::HashMap, f32::consts::PI, time::Instant};
 
 use anyhow::Error;
-use nvg::*;
+use nvg::prelude::*;
 use rand::prelude::*;
 
 lazy_static! {
@@ -58,7 +58,7 @@ impl ShapeKind {
 struct Shape {
     rotation: f32,
     speed: f32,
-    color: nvg::Color,
+    color: Color,
     kind: ShapeKind,
 }
 
@@ -79,7 +79,7 @@ impl Shape {
         self.rotation = self.rotation + dt * self.speed;
     }
 
-    fn draw<R: Renderer>(&self, ctx: &mut nvg::Context<R>, (x, y): (f32, f32), size: f32) {
+    fn draw<R: Renderer>(&self, ctx: &mut Context<R>, (x, y): (f32, f32), size: f32) {
         let margin = size * 0.2;
         let x = x + margin;
         let y = y + margin;
@@ -98,7 +98,7 @@ impl Shape {
         (cx, cy): (f32, f32),
         diameter: f32,
         rotation: f32,
-        color: nvg::Color,
+        color: Color,
         num_sides: u8,
     ) {
         assert!(num_sides >= 3);
@@ -124,7 +124,7 @@ impl Shape {
         (cx, cy): (f32, f32),
         (w, h): (f32, f32),
         rotation: f32,
-        color: nvg::Color,
+        color: Color,
         phi: u8,
     ) {
         let phi = phi as f32;

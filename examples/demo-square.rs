@@ -1,12 +1,13 @@
-use gl;
-use glutin::{
-    dpi::LogicalSize,
-    event::{Event, StartCause, WindowEvent},
-    event_loop::{ControlFlow, EventLoop},
-    window::WindowBuilder,
-    ContextBuilder,
+use ::{
+    glutin::{
+        dpi::LogicalSize,
+        event::{Event, StartCause, WindowEvent},
+        event_loop::{ControlFlow, EventLoop},
+        window::WindowBuilder,
+        ContextBuilder,
+    },
+    nvg::prelude::{Color, Context, Extent, Point, Rect},
 };
-use nvg;
 
 fn main() {
     let el = EventLoop::new();
@@ -17,7 +18,7 @@ fn main() {
     let wc = unsafe { wc.make_current().unwrap() };
     gl::load_with(|p| wc.get_proc_address(p) as *const _);
     let renderer = nvg_gl_backend::Renderer::create().unwrap();
-    let mut nvg_ctx = nvg::Context::create(renderer).unwrap();
+    let mut nvg_ctx = Context::create(renderer).unwrap();
     el.run(move |evt, _, ctrl_flow| match evt {
         Event::NewEvents(StartCause::Init) => *ctrl_flow = ControlFlow::Wait,
         Event::LoopDestroyed => return,
@@ -35,7 +36,7 @@ fn main() {
             }
             nvg_ctx
                 .begin_frame(
-                    nvg::Extent {
+                    Extent {
                         width: size.width as f32,
                         height: size.height as f32,
                     },
@@ -43,11 +44,8 @@ fn main() {
                 )
                 .unwrap();
             nvg_ctx.save();
-            nvg_ctx.fill_paint(nvg::Color::rgb(1.0, 0.0, 0.0));
-            nvg_ctx.rect(nvg::Rect::new(
-                nvg::Point::new(10.0, 10.0),
-                nvg::Extent::new(40.0, 40.0),
-            ));
+            nvg_ctx.fill_paint(Color::rgb(1.0, 0.0, 0.0));
+            nvg_ctx.rect(Rect::new(Point::new(10.0, 10.0), Extent::new(40.0, 40.0)));
             nvg_ctx.fill().unwrap();
             nvg_ctx.restore();
             nvg_ctx.end_frame().unwrap();

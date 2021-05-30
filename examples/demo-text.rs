@@ -1,4 +1,4 @@
-use nvg::*;
+use nvg::prelude::{Align, Context, Renderer};
 
 mod demo;
 
@@ -16,13 +16,13 @@ impl<R: Renderer> demo::Demo<R> for DemoText {
         ctx.fill_paint((1.0, 1.0, 0.0));
 
         // horz align
-        ctx.text_align(nvg::Align::LEFT);
+        ctx.text_align(Align::LEFT);
         ctx.text((150, 60), "left")?;
 
-        ctx.text_align(nvg::Align::CENTER);
+        ctx.text_align(Align::CENTER);
         ctx.text((150, 80), "center")?;
 
-        ctx.text_align(nvg::Align::RIGHT);
+        ctx.text_align(Align::RIGHT);
         ctx.text((150, 100), "right")?;
 
         // vert align
@@ -32,16 +32,16 @@ impl<R: Renderer> demo::Demo<R> for DemoText {
         ctx.stroke_paint((1.0, 0.0, 0.0));
         ctx.stroke()?;
 
-        ctx.text_align(nvg::Align::TOP);
+        ctx.text_align(Align::TOP);
         ctx.text((5, 270), "top")?;
 
-        ctx.text_align(nvg::Align::MIDDLE);
+        ctx.text_align(Align::MIDDLE);
         ctx.text((50, 270), "middle")?;
 
-        ctx.text_align(nvg::Align::BOTTOM);
+        ctx.text_align(Align::BOTTOM);
         ctx.text((120, 270), "bottom")?;
 
-        ctx.text_align(nvg::Align::BASELINE);
+        ctx.text_align(Align::BASELINE);
         ctx.text((200, 270), "baseline")?;
 
         // spaces

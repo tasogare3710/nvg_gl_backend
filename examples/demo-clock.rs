@@ -1,7 +1,7 @@
 use std::f32::consts::PI;
 
 use chrono::{DateTime, Datelike, Local, Timelike};
-use nvg::*;
+use nvg::prelude::*;
 
 mod demo;
 

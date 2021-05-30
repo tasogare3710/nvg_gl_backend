@@ -4,7 +4,7 @@ use glutin::{
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
 };
-use nvg::{Align, Color, Context, Renderer};
+use nvg::prelude::{Align, Color, Context, Renderer};
 
 pub trait Demo<R: Renderer> {
     fn init(&mut self, ctx: &mut Context<R>) -> anyhow::Result<()> {
@@ -32,7 +32,7 @@ pub fn run<D: Demo<nvg_gl_backend::Renderer> + 'static>(mut demo: D, title: &str
     let scale_factor = windowed_context.window().scale_factor();
 
     let renderer = nvg_gl_backend::Renderer::create().unwrap();
-    let mut context = nvg::Context::create(renderer).unwrap();
+    let mut context = nvg::prelude::Context::create(renderer).unwrap();
 
     demo.init(&mut context).unwrap();
 
@@ -57,7 +57,7 @@ pub fn run<D: Demo<nvg_gl_backend::Renderer> + 'static>(mut demo: D, title: &str
                 }
                 context
                     .begin_frame(
-                        nvg::Extent {
+                        nvg::prelude::Extent {
                             width: window_size.width as f32,
                             height: window_size.height as f32,
                         },

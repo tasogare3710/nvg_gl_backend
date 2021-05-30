@@ -1,20 +1,19 @@
-#[macro_use]
-extern crate lazy_static;
+use ::{
+    anyhow::Error,
+    nvg::prelude::*,
+    once_cell::sync::Lazy,
+    rand::prelude::*,
+    std::{collections::HashMap, f32::consts::PI, time::Instant},
+};
 
-use std::{collections::HashMap, f32::consts::PI, time::Instant};
-
-use anyhow::Error;
-use nvg::prelude::*;
-use rand::prelude::*;
-
-lazy_static! {
-    static ref COLORS: [Color; 4] = [
+static COLORS: Lazy<[Color; 4]> = Lazy::new(|| {
+    [
         Color::rgb_i(0x00, 0xBF, 0xA8),
         Color::rgb_i(0x99, 0x66, 0xFF),
         Color::rgb_i(0xFF, 0x64, 0x64),
-        Color::rgb_i(0x00, 0xC8, 0xFF)
-    ];
-}
+        Color::rgb_i(0x00, 0xC8, 0xFF),
+    ]
+});
 
 struct ShapeCache(HashMap<u32, Shape>);
 

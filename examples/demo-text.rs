@@ -1,6 +1,6 @@
-use nvg::prelude::{Align, Context, Renderer};
-
 mod demo;
+
+use nvg::prelude::{Align, Context, Renderer};
 
 struct DemoText;
 

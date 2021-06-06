@@ -1,3 +1,5 @@
+mod demo;
+
 use ::{
     anyhow::Error,
     nvg::prelude::*,
@@ -22,7 +24,7 @@ impl ShapeCache {
         ShapeCache(HashMap::new())
     }
 
-    fn get<T: Rng>(&mut self, pair: (u16, u16), rng: &mut T) -> &mut Shape {
+    fn get_mut<T: Rng>(&mut self, pair: (u16, u16), rng: &mut T) -> &mut Shape {
         let index = ShapeCache::elegent_pair(pair);
         self.0.entry(index).or_insert_with(|| Shape::new(rng))
     }
@@ -46,10 +48,9 @@ enum ShapeKind {
 
 impl ShapeKind {
     fn rand<R: Rng>(rng: &mut R) -> Self {
-        match rng.gen_range(0..2) {
-            0 => ShapeKind::Polygon(rng.gen_range(3..6)),
-            1 => ShapeKind::Squiggle(rng.gen_range(3..6)),
-            _ => unreachable!(),
+        match rng.gen_bool(0.5) {
+            true => ShapeKind::Squiggle(rng.gen_range(3..6)),
+            false => ShapeKind::Polygon(rng.gen_range(3..6)),
         }
     }
 }
@@ -62,15 +63,18 @@ struct Shape {
 }
 
 impl Shape {
-    fn new<T: Rng>(rng: &mut T) -> Shape {
-        let color = COLORS.choose(rng).unwrap();
+    fn new<T: Rng>(rng: &mut T) -> Self {
+        let color = COLORS.choose(rng).unwrap().clone();
+        let rotation = rng.gen_range(0.0..2.0 * PI);
         let direction = [-1.0f32, 1.0f32].choose(rng).unwrap();
+        let speed = rng.gen_range(1.0..4.0) * direction;
+        let kind = ShapeKind::rand(rng);
 
-        Shape {
-            rotation: rng.gen_range(0.0..2.0 * PI),
-            speed: rng.gen_range(1.0..4.0) * direction,
-            color: *color,
-            kind: ShapeKind::rand(rng),
+        Self {
+            rotation,
+            speed,
+            color,
+            kind,
         }
     }
 
@@ -127,23 +131,21 @@ impl Shape {
         phi: u8,
     ) {
         let phi = phi as f32;
-        let mut points = [(0.0, 0.0); 64];
-        for i in 0..points.len() {
-            let pct = i as f32 / (points.len() as f32 - 1.0);
+        const POINTS_LEN: usize = 64;
+        let mut points = (0..POINTS_LEN).map(|i| {
+            let pct = i as f32 / (POINTS_LEN as f32 - 1.0);
             let theta = pct * PI * 2.0 * phi + PI / 2.0;
             let sx = w * pct - w / 2.0;
             let sy = h / 2.0 * theta.sin();
-            points[i as usize] = (sx, sy);
-        }
+            (sx, sy)
+        });
 
         ctx.begin_path();
         ctx.reset_transform();
         ctx.translate(cx, cy);
         ctx.rotate(rotation);
-        ctx.move_to(points[0]);
-        for point in points.iter().skip(1) {
-            ctx.line_to(*point);
-        }
+        ctx.move_to(points.next().unwrap());
+        points.for_each(|p| ctx.line_to(p));
         ctx.stroke_width(3.0);
         ctx.stroke_paint(color);
         ctx.stroke().unwrap();
@@ -204,8 +206,6 @@ fn render_rectangle<R: Renderer>(ctx: &mut Context<R>, (x, y): (f32, f32), (w, h
     ctx.fill().unwrap();
 }
 
-mod demo;
-
 struct DemoCutout {
     start_time: Instant,
     prev_time: f32,
@@ -246,7 +246,7 @@ impl<R: Renderer> demo::Demo<R> for DemoCutout {
 
         for x in 0..max_cols {
             for y in 0..max_rows {
-                let shape = self.shapes.get((x, y), &mut self.rng);
+                let shape = self.shapes.get_mut((x, y), &mut self.rng);
                 shape.update(delta_time);
                 let x = x as f32 * block_size - offset;
                 let y = y as f32 * block_size - offset;

@@ -1,31 +1,32 @@
-use std::f32::consts::PI;
-
-use chrono::{DateTime, Datelike, Local, Timelike};
-use nvg::prelude::*;
-
 mod demo;
+
+use ::{
+    chrono::{Datelike, Local, Timelike},
+    nvg::prelude::*,
+    std::f32::consts::PI,
+};
 
 struct DemoClock;
 
 impl<R: Renderer> demo::Demo<R> for DemoClock {
     fn update(&mut self, width: f32, height: f32, ctx: &mut Context<R>) -> anyhow::Result<()> {
-        let dt: DateTime<Local> = Local::now();
+        let dt = Local::now();
         let hour = dt.hour();
         let am = hour < 12;
-        let hour: f32 = f64::from(hour % 12) as f32;
-        let minute: f32 = f64::from(dt.minute()) as f32;
-        let second: f32 = f64::from(dt.second()) as f32;
-        let year: i32 = dt.year();
-        let month: u32 = dt.month();
-        let day: u32 = dt.day();
+        let hour = (hour % 12) as f32;
+        let minute = dt.minute() as f32;
+        let second = dt.second() as f32;
+        let year = dt.year();
+        let month = dt.month();
+        let day = dt.day();
 
         let clock_size = width.min(height) - 2.0;
 
         let font_size = 24.0;
-
-        let origin = (0.0, 0.0); // upper-left corner
-        let dial_center = (f64::from(width) as f32 / 2.0, f64::from(height) as f32 / 2.0);
-        let dial_radius: f32 = clock_size / 2.0;
+        // upper-left corner
+        let origin = (0.0, 0.0);
+        let dial_center = (width / 2.0, height / 2.0);
+        let dial_radius = clock_size / 2.0;
         let second_hand_len = dial_radius * 0.9;
         let minute_hand_len = dial_radius * 0.8;
         let hour_hand_len = dial_radius * 0.6;
@@ -34,29 +35,28 @@ impl<R: Renderer> demo::Demo<R> for DemoClock {
         let radians_per_sec = two_pi / 60.0;
         let radians_per_hour = two_pi / 12.0;
 
-        let white: Color = Color::rgba(1.0, 1.0, 1.0, 1.0);
-        let silver: Color = Color::rgb_i(196, 199, 206);
-        let darksilver: Color = Color::rgb_i(148, 152, 161);
-        let darkgray: Color = Color::rgb_i(169, 169, 169);
+        let white = Color::rgba(1.0, 1.0, 1.0, 1.0);
+        let silver = Color::rgb_i(196, 199, 206);
+        let darksilver = Color::rgb_i(148, 152, 161);
+        let darkgray = Color::rgb_i(169, 169, 169);
         let dial_color = Color::rgba(0.2, 0.0, 0.8, 1.0);
 
-        let sigils: Vec<String> = (0..13).map(|n| format!("{}", n)).collect();
-        for h in 1..13 {
-            let j = f64::from(h) as f32;
+        for (h, sigil) in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+            .iter()
+            .skip(1)
+            .enumerate()
+        {
+            let j = h as f32;
             let x = dial_center.0 + (second_hand_len * (j * radians_per_hour).sin());
             let y = dial_center.1 - (second_hand_len * (j * radians_per_hour).cos());
 
             ctx.fill_paint(silver);
             ctx.font_size(font_size);
             ctx.text_align(Align::CENTER | Align::MIDDLE);
-            ctx.text((x, y), &sigils[h as usize])?;
+            ctx.text((x, y), sigil)?;
         }
 
-        for m in 1..61 {
-            if m % 5 == 0 {
-                continue;
-            }
-            let m = f64::from(m) as f32;
+        for m in (1u8..61).filter(|m| m % 5 != 0).map(f32::from) {
             let ticks_radius = dial_radius * 0.925;
             let tick_len = 3.0;
             let tick_width = 1.0;
@@ -95,7 +95,7 @@ impl<R: Renderer> demo::Demo<R> for DemoClock {
         ctx.fill()?;
         ctx.stroke()?;
 
-        let mut draw_hand = |theta: f32, length: f32, width: f32| {
+        let mut draw_hand = |theta, length: f32, width| {
             ctx.stroke_width(width);
             ctx.begin_path();
             ctx.reset_transform();

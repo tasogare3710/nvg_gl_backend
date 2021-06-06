@@ -1,9 +1,10 @@
-use std::{f32::consts::PI, time::Instant};
-
-use anyhow::Error;
-use nvg::prelude::*;
-
 mod demo;
+
+use ::{
+    anyhow::Error,
+    nvg::prelude::*,
+    std::{f32::consts::PI, time::Instant},
+};
 
 struct DemoDraw {
     img: Option<ImageId>,
@@ -49,17 +50,17 @@ impl<R: Renderer> demo::Demo<R> for DemoDraw {
 
         ctx.begin_path();
         let radius = 100.0;
-        let distance = 500.0; // Distance to roll
-        let rolled = ((elapsed / 5.0).sin() * 0.5 + 0.5) * distance; // Distance currently rolled
+        // Distance to roll
+        let distance = 500.0;
+        // Distance currently rolled
+        let rolled = ((elapsed / 5.0).sin() * 0.5 + 0.5) * distance;
         let origin = (rolled + 100.0, 600.0);
-        ctx.fill_paint({
-            ImagePattern {
-                img: self.img.unwrap(),
-                center: origin.into(),
-                size: (100.0, 100.0).into(),
-                angle: rolled / (2.0 * PI * radius) * 2.0 * PI,
-                alpha: 1.0,
-            }
+        ctx.fill_paint(ImagePattern {
+            img: self.img.unwrap(),
+            center: origin.into(),
+            size: (100.0, 100.0).into(),
+            angle: rolled / (2.0 * PI * radius) * 2.0 * PI,
+            alpha: 1.0,
         });
         ctx.scissor((150, 600, 1000, 200));
         ctx.circle(origin, radius);
